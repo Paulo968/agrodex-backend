@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AgroDex - O Oráculo Vivo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white font-sans p-4">
+  <h1 class="text-4xl font-bold text-cyan-400 mb-6">AgroDex</h1>
+
+  <form id="search-form" class="mb-6">
+    <input id="product-name" type="text" placeholder="Digite o nome do produto..." class="p-3 rounded text-black w-full max-w-md" />
+    <button type="submit" class="mt-2 bg-cyan-500 px-4 py-2 rounded hover:bg-cyan-600">Consultar</button>
+  </form>
+
+  <div id="output" class="whitespace-pre-wrap text-sm bg-gray-800 p-4 rounded"></div>
+
+  <script>
+    const form = document.getElementById("search-form");
+    const input = document.getElementById("product-name");
+    const output = document.getElementById("output");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const produto = input.value.trim();
+      if (!produto) return;
+
+      output.innerText = "Consultando inteligência artificial...";
+      try {
+        const response = await fetch("/api/intel", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ produto })
+        });
+
+        const data = await response.json();
+        output.innerText = JSON.stringify(data, null, 2);
+      } catch (err) {
+        output.innerText = "Erro ao consultar IA: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
